@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+
+  &.left {
+    justify-content: flex-end;
+  }
+}
+
+.line {
+  height: 4px;
+  width: 15px;
+  background-color: rgb(144, 144, 144);
+}
+
+.button {
+  background-color: rgb(185, 185, 185);
+  height: 30px;
+  width: 50px;
+  border-radius: 5px;
+}

@@ -1,38 +1,145 @@
-.App {
-  text-align: center;
+.background {
+  background-color: rgb(148, 117, 160);
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.atm-container {
+  height: 90vh;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.atm {
+  background-color: rgb(240, 238, 228);
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  align-items: center;
+  position: relative;
+}
+
+.atm-sign-container {
+  position: relative;
+  background-color: rgb(50, 106, 169);
+  width: 440px;
+  height: 160px;
+  border-radius: 15px;
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
 }
 
-.App-link {
-  color: #61dafb;
+.atm-sign-container img {
+  object-fit: none;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.graffiti-img {
+  position: absolute;
+  right: 25px;
+  top: 36px;
 }
+
+.gray-bar {
+  background-color: rgb(182, 182, 182);
+  height: 8px;
+  width: 100%;
+}
+
+.credit-cards-container {
+  width: 237px; /* Width of all combined cards */
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.credit-card-back,
+.credit-card-front {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 21px;
+  background-image: url("./assets/creditcard_sprite.png");
+  background-repeat: no-repeat;
+}
+
+.credit-card-back {
+  width: 237px; /* Width of all combined cards */
+  background-position: 0 -21px;
+  z-index: 1; /* Will be behind the front card */
+}
+
+.credit-card-front {
+  top: 1px;
+  width: 237px; /* Width of all combined cards */
+  z-index: 2; /* Will be on top of the back card */
+}
+
+.credit-card-back,
+.credit-card-front {
+  box-sizing: border-box;
+}
+
+.credit-card-star {
+  clip-path: inset(0 199px 0 0);
+}
+
+.credit-card-pulse {
+  clip-path: inset(0 157px 0 40px);
+}
+
+.credit-card-maestro {
+  clip-path: inset(0 115px 0 80px);
+}
+
+.credit-card-mastercard {
+  clip-path: inset(0 76px 0 124px);
+}
+
+.credit-card-plus {
+  clip-path: inset(0 36px 0 159px);
+}
+
+.credit-card-visa {
+  clip-path: inset(0 0 0 199px);
+}
+
+.screen-section {
+  display: flex;
+  width: 100%;
+}
+
+.screen {
+  position: relative;
+  width: 240px;
+  height: 240px;
+  background-color: rgb(107, 172, 205);
+  margin-top: 40px;
+  border: 5px solid rgb(222, 221, 209);
+}
+
+.buttons {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  margin-bottom: 20px;
+}
+
+.sticker-graf-img {
+  position: absolute;
+  bottom: -100px;
+  left: -50px;
+}
+
+.systems-img {
+  position: absolute;
+  bottom: -15px;
+  right: -5px;
+}
+
+/* For other card types, just adjust the values accordingly. */
