@@ -61,7 +61,7 @@ The client interface will now open in your default browser, running on http://lo
 
 ## Usage
 
-1. Validation: Use the client interface to enter a pin and validate it. The API will check the accounts.ts file for a match (look at this file for pins to enter). Depending on which account is matched, the credit card for that account should light up at the top and a welcome message should display for the name associated with the account.
+1. Validation: Use the client interface to enter a pin and validate it. The API will check the accounts.ts file for a match (check this file for matching pins). Depending on which account is matched, the credit card for that account should light up on the ATM and a welcome message should be displayed for the name associated with the account.
 
 2. Withdraw: Enter a pin and the amount you wish to withdraw. The API will deduct the amount from the matched account in the accounts.ts file, provided sufficient funds are available.
 
