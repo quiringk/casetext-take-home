@@ -22,7 +22,7 @@ const DynamicInput: React.FC<DynamicInputProps> = ({
 
   useEffect(() => {
     if (inputRef.current) {
-      inputRef.current.focus(); // Sets the focus to the input
+      inputRef.current.focus();
     }
   }, []);
 

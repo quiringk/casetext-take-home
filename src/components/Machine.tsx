@@ -8,40 +8,35 @@ import DynamicInput from "./DynamicInput";
 
 function Machine() {
   const [atmState, setAtmState] = useState({
-    screen: "welcome",
-    inputLabel: "",
-    inputValue: "",
-    isPin: false,
-    readOnly: false,
-    message: "Welcome to the ATM",
     authenticated: false,
-    action: "",
+    screen: "welcome",
+    message: "Welcome to the ATM",
     balance: 50000,
     optionsLeft: ["", "", "", ""],
     optionsRight: ["", "", "", "Enter PIN"],
+    inputLabel: "",
+    inputValue: "",
   });
 
   const {
     inputLabel,
     inputValue,
-    isPin,
-    readOnly,
     message,
     authenticated,
-    action,
+    screen,
     balance,
     optionsLeft,
     optionsRight,
   } = atmState;
 
-  const buttonPressed = (option: string) => {
-    switch (option) {
+  const buttonPressed = (value: string) => {
+    switch (value) {
       case "Balance":
         setAtmState((prevState) => ({
           ...prevState,
+          screen: "balance",
           inputLabel: "Balance:",
           inputValue: balance.toString(),
-          readOnly: true,
           message: "",
           optionsLeft: ["", "", "", ""],
           optionsRight: ["", "", "", "Cancel"],
@@ -53,18 +48,17 @@ function Machine() {
         setAtmState((prevState) => ({
           ...prevState,
           authenticated: false,
-          action: "pin",
+          screen: "pin",
           message: "",
           inputLabel: "PIN:",
           inputValue: "",
           isPin: true,
-          readOnly: false,
           optionsLeft: ["", "", "", ""],
           optionsRight: ["", "", "Cancel", "Enter"],
         }));
         break;
       case "Enter":
-        switch (action) {
+        switch (screen) {
           case "pin":
             if (inputValue.length === 4) {
               setAtmState((prevState) => ({
@@ -165,27 +159,25 @@ function Machine() {
       case "Withdraw":
         setAtmState((prevState) => ({
           ...prevState,
-          action: "withdraw",
+          screen: "withdraw",
           message: "",
           inputLabel: "Withdraw:",
           inputValue: "",
           optionsLeft: ["", "", "", ""],
           optionsRight: ["", "", "Cancel", "Enter"],
           isPin: false,
-          readOnly: false,
         }));
         break;
       case "Deposit":
         setAtmState((prevState) => ({
           ...prevState,
-          action: "deposit",
+          screen: "deposit",
           message: "",
           inputLabel: "Deposit:",
           inputValue: "",
           optionsLeft: ["", "", "", ""],
           optionsRight: ["", "", "Cancel", "Enter"],
           isPin: false,
-          readOnly: false,
         }));
         break;
       default:
@@ -218,9 +210,9 @@ function Machine() {
             onChange={(val) =>
               setAtmState((prevState) => ({ ...prevState, inputValue: val }))
             }
-            isPin={isPin}
-            maxLength={isPin ? 4 : 8}
-            readOnly={readOnly}
+            isPin={screen === "pin"}
+            maxLength={screen === "pin" ? 4 : 8}
+            readOnly={screen === "balance"}
           />
         )}
         <Option side="left" position={1} value={optionsLeft[0]} />

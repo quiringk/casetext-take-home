@@ -13,7 +13,7 @@
   align-items: center;
 }
 
-.atm {
+.atm-body {
   background-color: rgb(240, 238, 228);
   width: 400px;
   display: flex;
@@ -23,7 +23,7 @@
   position: relative;
 }
 
-.atm-sign-container {
+.atm-sign {
   position: relative;
   background-color: rgb(50, 106, 169);
   width: 440px;
@@ -33,7 +33,7 @@
   justify-content: center;
 }
 
-.atm-sign-container img {
+.atm-sign img {
   object-fit: none;
 }
 
@@ -57,57 +57,6 @@
   transform: translate(-50%, -50%);
 }
 
-.credit-card-back,
-.credit-card-front {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 21px;
-  background-image: url("./assets/creditcard_sprite.png");
-  background-repeat: no-repeat;
-}
-
-.credit-card-back {
-  width: 237px; /* Width of all combined cards */
-  background-position: 0 -21px;
-  z-index: 1; /* Will be behind the front card */
-}
-
-.credit-card-front {
-  top: 1px;
-  width: 237px; /* Width of all combined cards */
-  z-index: 2; /* Will be on top of the back card */
-}
-
-.credit-card-back,
-.credit-card-front {
-  box-sizing: border-box;
-}
-
-.credit-card-star {
-  clip-path: inset(0 199px 0 0);
-}
-
-.credit-card-pulse {
-  clip-path: inset(0 157px 0 40px);
-}
-
-.credit-card-maestro {
-  clip-path: inset(0 115px 0 80px);
-}
-
-.credit-card-mastercard {
-  clip-path: inset(0 76px 0 124px);
-}
-
-.credit-card-plus {
-  clip-path: inset(0 36px 0 159px);
-}
-
-.credit-card-visa {
-  clip-path: inset(0 0 0 199px);
-}
-
 .buttons {
   flex: 1;
   display: flex;
@@ -127,5 +76,3 @@
   bottom: -15px;
   right: -5px;
 }
-
-/* For other card types, just adjust the values accordingly. */
