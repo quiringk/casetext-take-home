@@ -1,0 +1,45 @@
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.option {
+  font-family: "PressStart";
+  font-size: 9px;
+  color: white;
+  margin-right: 5px;
+  margin-left: 5px;
+}
+
+.left-option {
+  position: absolute;
+  left: 0px;
+}
+
+.right-option {
+  position: absolute;
+  right: 0px;
+}
+
+.position-1 {
+  bottom: 146px;
+}
+
+.position-2 {
+  bottom: 106px;
+}
+
+.position-3 {
+  bottom: 66px;
+}
+
+.position-4 {
+  bottom: 26px;
+}
+
+.white-line {
+  height: 4px;
+  width: 15px;
+  background-color: white;
+}

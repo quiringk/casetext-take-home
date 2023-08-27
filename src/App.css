@@ -108,20 +108,6 @@
   clip-path: inset(0 0 0 199px);
 }
 
-.screen-section {
-  display: flex;
-  width: 100%;
-}
-
-.screen {
-  position: relative;
-  width: 240px;
-  height: 240px;
-  background-color: rgb(107, 172, 205);
-  margin-top: 40px;
-  border: 5px solid rgb(222, 221, 209);
-}
-
 .buttons {
   flex: 1;
   display: flex;

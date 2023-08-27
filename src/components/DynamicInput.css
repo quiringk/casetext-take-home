@@ -1,0 +1,45 @@
+.input-container {
+  display: flex;
+  align-items: center;
+  position: relative; /* To position the actual input field over the boxes */
+  font-size: 12px;
+}
+
+.input-label {
+  font-family: "PressStart";
+  color: white;
+  margin-right: 10px;
+}
+
+.input-boxes {
+  display: flex;
+  gap: 5px;
+  font-family: "PressStart";
+  color: white;
+}
+
+.input-box {
+  width: 15px; /* Adjusted from 20px to 15px */
+  height: 15px; /* Adjusted from 20px to 15px */
+  border: none; /* Remove the border */
+  background: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "PressStart";
+  color: white; /* Asterisks will be in white */
+}
+
+.input-box.filled {
+  background: transparent; /* Make sure filled boxes don't change background */
+}
+
+.dynamicInputStyle {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 20px;
+  width: calc(
+    20px * var(--max-length) + 5px * (var(--max-length) - 1)
+  ); /* Assuming 5px is the gap */
+}
