@@ -1,17 +1,17 @@
-# Banking App
+# ATM App
 
-This application consists of two main components: the API server (handles banking operations) and the client (frontend interface). In this guide, we'll cover how to install, start, and use both components of the app.
+This application consists of two main components: the API server and the client. In this guide, we'll cover how to install, start, and use both components of the app.
 
 ## Directory Structure
 
 - `api/`: Contains the API server code.
-- `client/`: Contains the client code (frontend).
+- `client/`: Contains the client code.
 
 ## API
 
 ### Overview
 
-The API server manages all banking operations. Account information, including pins and balances, is stored in the `accounts.ts` file located in the `api` directory. For simplicity and demonstration purposes, this file acts as our "database". In real-world applications, you would typically use an actual database for managing accounts.
+The API server manages all ATM operations. Account information, including pins and balances, is stored in the `accounts.ts` file located in the `api/src` directory. For simplicity and demonstration purposes, this file acts as our "database". In real-world applications, you would typically use an actual database for managing accounts.
 
 ### Installation & Starting
 
@@ -61,7 +61,7 @@ The client interface will now open in your default browser, running on http://lo
 
 ## Usage
 
-1. Validation: Use the client interface to enter a pin and validate it. The API will check the accounts.ts file for a match.
+1. Validation: Use the client interface to enter a pin and validate it. The API will check the accounts.ts file for a match (look at this file for pins to enter). Depending on which account is matched, the credit card for that account should light up at the top and a welcome message should display for the name associated with the account.
 
 2. Withdraw: Enter a pin and the amount you wish to withdraw. The API will deduct the amount from the matched account in the accounts.ts file, provided sufficient funds are available.
 
