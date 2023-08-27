@@ -2,7 +2,7 @@ export const accounts = [
   {
     "name": "Peter Parker",
     "pin": "1111",
-    "balance": 11112234,
+    "balance": 1000,
     "creditCard": "star"
   },
   {
@@ -33,6 +33,6 @@ export const accounts = [
     "name": "Han Solo",
     "pin": "6666",
     "balance": 6000,
-    "creditCard": "amex"
+    "creditCard": "plus"
   }
 ];

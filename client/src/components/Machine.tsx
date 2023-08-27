@@ -6,17 +6,27 @@ import Button from "./Button";
 import Option from "./Option";
 import DynamicInput from "./DynamicInput";
 
-function Machine() {
+const API_URL = "http://localhost:3001";
+
+const DEFAULT_OPTIONS = {
+  optionsLeft: ["", "", "", ""],
+  optionsRight: ["", "", "", "Enter PIN"],
+};
+
+interface Props {
+  selectedCardChanged: (cardType: string) => void;
+}
+
+function Machine({ selectedCardChanged }: Props) {
   const [atmState, setAtmState] = useState({
     authenticated: false,
     screen: "welcome",
     message: "Welcome to the ATM",
     balance: 0,
     pin: "",
-    optionsLeft: ["", "", "", ""],
-    optionsRight: ["", "", "", "Enter PIN"],
     inputLabel: "",
     inputValue: "",
+    ...DEFAULT_OPTIONS,
   });
 
   const {
@@ -31,248 +41,271 @@ function Machine() {
     optionsRight,
   } = atmState;
 
-  const buttonPressed = async (value: string) => {
-    switch (value) {
-      case "Balance":
-        setAtmState((prevState) => ({
-          ...prevState,
-          screen: "balance",
-          inputLabel: "Balance:",
-          inputValue: balance.toString(),
-          message: "",
-          optionsLeft: ["", "", "", ""],
-          optionsRight: ["", "", "", "Cancel"],
-          isPin: false,
-        }));
-        break;
-      case "Enter PIN":
-      case "Re-Enter PIN":
-        setAtmState((prevState) => ({
-          ...prevState,
-          authenticated: false,
-          screen: "pin",
-          message: "",
-          inputLabel: "PIN:",
-          inputValue: "",
-          isPin: true,
-          optionsLeft: ["", "", "", ""],
-          optionsRight: ["", "", "Cancel", "Enter"],
-        }));
-        break;
-      case "Enter":
-        switch (screen) {
-          case "pin":
-            if (inputValue.length === 4) {
-              try {
-                const response = await fetch(
-                  "http://localhost:3001/validate-pin",
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ pin: inputValue }),
-                  }
-                );
+  const handleBalance = () => {
+    setAtmState((prevState) => ({
+      ...prevState,
+      screen: "balance",
+      inputLabel: "Balance:",
+      inputValue: balance.toString(),
+      message: "",
+      optionsLeft: ["", "", "", ""],
+      optionsRight: ["", "", "", "Cancel"],
+      isPin: false,
+    }));
+  };
 
-                console.log("response", response);
+  const handleEnterPin = () => {
+    selectedCardChanged("");
+    setAtmState((prevState) => ({
+      ...prevState,
+      authenticated: false,
+      screen: "pin",
+      message: "",
+      inputLabel: "PIN:",
+      inputValue: "",
+      isPin: true,
+      optionsLeft: ["", "", "", ""],
+      optionsRight: ["", "", "Cancel", "Enter"],
+    }));
+  };
 
-                if (response.ok) {
-                  const account = await response.json();
-                  // Here, you can also update the greeting message to display the account name.
-                  setAtmState((prevState) => ({
-                    ...prevState,
-                    authenticated: true,
-                    message: `Hi ${account.name}! Please make a choice...`,
-                    balance: account.balance,
-                    pin: inputValue,
-                    optionsLeft: ["", "", "Withdraw", "Deposit"],
-                    optionsRight: ["", "Exit", "Balance", "Re-Enter PIN"],
-                    inputLabel: "",
-                  }));
-                } else {
-                  // Handle incorrect PIN or any other error
-                  setAtmState((prevState) => ({
-                    ...prevState,
-                    inputLabel: "",
-                    message: "Invalid PIN",
-                    optionsLeft: ["", "", "", ""],
-                    optionsRight: ["", "", "", "Cancel"],
-                  }));
-                }
-              } catch (error) {
-                // Handle network or any other errors here
-                console.error("Error while validating PIN:", error);
-                setAtmState((prevState) => ({
-                  ...prevState,
-                  inputLabel: "",
-                  message: "Error validating PIN. Please try again.",
-                  optionsLeft: ["", "", "", ""],
-                  optionsRight: ["", "", "", "Cancel"],
-                }));
-              }
-            } else {
+  const handleEnter = async () => {
+    switch (screen) {
+      case "pin":
+        if (inputValue.length === 4) {
+          try {
+            const response = await fetch(`${API_URL}/validate-pin`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ pin: inputValue }),
+            });
+
+            if (response.ok) {
+              const account = await response.json();
+              selectedCardChanged(account.creditCard);
+              // Here, you can also update the greeting message to display the account name.
               setAtmState((prevState) => ({
                 ...prevState,
+                authenticated: true,
+                message: `Hi ${account.name}! Please make a choice...`,
+                balance: account.balance,
+                pin: inputValue,
+                optionsLeft: ["", "", "Withdraw", "Deposit"],
+                optionsRight: ["", "Exit", "Balance", "Re-Enter PIN"],
                 inputLabel: "",
-                message: "Invalid PIN length",
-                optionsLeft: ["", "", "", ""],
-                optionsRight: ["", "", "", "Cancel"],
-              }));
-            }
-            break;
-          case "withdraw": {
-            if (parseInt(inputValue) <= balance && parseInt(inputValue) > 0) {
-              // Make the API request
-              fetch("http://localhost:3001/withdraw", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  pin: pin, // this should be the pin of the authenticated user
-                  amount: parseInt(inputValue),
-                }),
-              })
-                .then((response) => response.json())
-                .then((data) => {
-                  setAtmState((prevState) => ({
-                    ...prevState,
-                    inputLabel: "",
-                    balance: data.newBalance,
-                    message: "Money has successfully been withdrawn!",
-                    optionsRight: ["", "", "Exit", "Back to Menu"],
-                  }));
-                })
-                .catch((error) => {
-                  console.error("Error:", error);
-                });
-            } else if (parseInt(inputValue) > balance) {
-              setAtmState((prevState) => ({
-                ...prevState,
-                inputLabel: "",
-                message: "Insufficient funds",
-                optionsLeft: ["", "", "", ""],
-                optionsRight: ["", "", "", "Cancel"],
               }));
             } else {
               setAtmState((prevState) => ({
                 ...prevState,
                 inputLabel: "",
-                inputValue: "",
-                message: "No amount entered.",
+                message: "Invalid PIN",
+                optionsLeft: ["", "", "", ""],
                 optionsRight: ["", "", "", "Cancel"],
               }));
             }
-            break;
+          } catch (error) {
+            console.error("Error while validating PIN:", error);
+            setAtmState((prevState) => ({
+              ...prevState,
+              inputLabel: "",
+              message: "Error validating PIN. Please try again.",
+              optionsLeft: ["", "", "", ""],
+              optionsRight: ["", "", "", "Cancel"],
+            }));
           }
-          case "deposit":
-            if (parseInt(inputValue) > 0) {
-              fetch("http://localhost:3001/deposit", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  pin: pin,
-                  amount: parseInt(inputValue),
-                }),
-              })
-                .then((res) => res.json())
-                .then((data) => {
-                  if (data.success) {
-                    setAtmState((prevState) => ({
-                      ...prevState,
-                      balance: data.newBalance,
-                      inputLabel: "",
-                      inputValue: "",
-                      message: "Money has successfully been deposited!",
-                      optionsRight: ["", "", "Exit", "Back to Menu"],
-                    }));
-                  } else {
-                    // Handle any error message from the server here
-                    setAtmState((prevState) => ({
-                      ...prevState,
-                      inputLabel: "",
-                      inputValue: "",
-                      message: "Failed to deposit.",
-                      optionsRight: ["", "", "", "Cancel"],
-                    }));
-                  }
-                })
-                .catch((error) => {
-                  console.error("Error while depositing:", error);
-                  setAtmState((prevState) => ({
-                    ...prevState,
-                    inputLabel: "",
-                    inputValue: "",
-                    message: "Error occurred. Please try again.",
-                    optionsRight: ["", "", "", "Cancel"],
-                  }));
-                });
-            } else {
-              setAtmState((prevState) => ({
-                ...prevState,
-                inputLabel: "",
-                inputValue: "",
-                message: "No amount entered.",
-                optionsRight: ["", "", "", "Cancel"],
-              }));
-            }
-            break;
-        }
-        break;
-      case "Exit":
-        setAtmState((prevState) => ({
-          ...prevState,
-          message: "Welcome to the ATM",
-          optionsLeft: ["", "", "", ""],
-          optionsRight: ["", "", "", "Enter PIN"],
-          authenticated: false,
-        }));
-        break;
-      case "Back to Menu":
-      case "Cancel":
-        if (authenticated) {
+        } else {
           setAtmState((prevState) => ({
             ...prevState,
             inputLabel: "",
-            message: "Hi Peter Parker! Please make a choice...",
-            optionsLeft: ["", "", "Withdraw", "Deposit"],
-            optionsRight: ["", "Exit", "Balance", "Re-Enter PIN"],
+            message: "Invalid PIN length",
+            optionsLeft: ["", "", "", ""],
+            optionsRight: ["", "", "", "Cancel"],
+          }));
+        }
+        break;
+      case "withdraw": {
+        if (parseInt(inputValue) <= balance && parseInt(inputValue) > 0) {
+          // Make the API request
+          fetch(`${API_URL}/withdraw`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              pin: pin, // this should be the pin of the authenticated user
+              amount: parseInt(inputValue),
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              setAtmState((prevState) => ({
+                ...prevState,
+                inputLabel: "",
+                balance: data.newBalance,
+                message: "Money has successfully been withdrawn!",
+                optionsRight: ["", "", "Exit", "Back to Menu"],
+              }));
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        } else if (parseInt(inputValue) > balance) {
+          setAtmState((prevState) => ({
+            ...prevState,
+            inputLabel: "",
+            message: "Insufficient funds",
+            optionsLeft: ["", "", "", ""],
+            optionsRight: ["", "", "", "Cancel"],
           }));
         } else {
           setAtmState((prevState) => ({
             ...prevState,
             inputLabel: "",
-            message: "Welcome to the ATM",
-            optionsRight: ["", "", "", "Enter PIN"],
+            inputValue: "",
+            message: "No amount entered.",
+            optionsRight: ["", "", "", "Cancel"],
           }));
         }
         break;
+      }
+      case "deposit":
+        if (parseInt(inputValue) > 0) {
+          fetch(`${API_URL}/deposit`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              pin: pin,
+              amount: parseInt(inputValue),
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              if (data.success) {
+                setAtmState((prevState) => ({
+                  ...prevState,
+                  balance: data.newBalance,
+                  inputLabel: "",
+                  inputValue: "",
+                  message: "Money has successfully been deposited!",
+                  optionsRight: ["", "", "Exit", "Back to Menu"],
+                }));
+              } else {
+                // Handle any error message from the server here
+                setAtmState((prevState) => ({
+                  ...prevState,
+                  inputLabel: "",
+                  inputValue: "",
+                  message: "Failed to deposit.",
+                  optionsRight: ["", "", "", "Cancel"],
+                }));
+              }
+            })
+            .catch((error) => {
+              console.error("Error while depositing:", error);
+              setAtmState((prevState) => ({
+                ...prevState,
+                inputLabel: "",
+                inputValue: "",
+                message: "Error occurred. Please try again.",
+                optionsRight: ["", "", "", "Cancel"],
+              }));
+            });
+        } else {
+          setAtmState((prevState) => ({
+            ...prevState,
+            inputLabel: "",
+            inputValue: "",
+            message: "No amount entered.",
+            optionsRight: ["", "", "", "Cancel"],
+          }));
+        }
+        break;
+    }
+  };
+
+  const handleExit = () => {
+    selectedCardChanged("");
+    setAtmState((prevState) => ({
+      ...prevState,
+      message: "Welcome to the ATM",
+      ...DEFAULT_OPTIONS,
+      authenticated: false,
+    }));
+  };
+
+  const handleBackToMenuOrCancel = () => {
+    if (authenticated) {
+      setAtmState((prevState) => ({
+        ...prevState,
+        inputLabel: "",
+        message: "Hi Peter Parker! Please make a choice...",
+        optionsLeft: ["", "", "Withdraw", "Deposit"],
+        optionsRight: ["", "Exit", "Balance", "Re-Enter PIN"],
+      }));
+    } else {
+      setAtmState((prevState) => ({
+        ...prevState,
+        inputLabel: "",
+        message: "Welcome to the ATM",
+        ...DEFAULT_OPTIONS,
+      }));
+    }
+  };
+
+  const handleWithdraw = () => {
+    setAtmState((prevState) => ({
+      ...prevState,
+      screen: "withdraw",
+      message: "",
+      inputLabel: "Withdraw:",
+      inputValue: "",
+      optionsLeft: ["", "", "", ""],
+      optionsRight: ["", "", "Cancel", "Enter"],
+      isPin: false,
+    }));
+  };
+
+  const handleDeposit = () => {
+    setAtmState((prevState) => ({
+      ...prevState,
+      screen: "deposit",
+      message: "",
+      inputLabel: "Deposit:",
+      inputValue: "",
+      optionsLeft: ["", "", "", ""],
+      optionsRight: ["", "", "Cancel", "Enter"],
+      isPin: false,
+    }));
+  };
+
+  const buttonPressed = async (value: string) => {
+    switch (value) {
+      case "Balance":
+        handleBalance();
+        break;
+      case "Enter PIN":
+      case "Re-Enter PIN":
+        handleEnterPin();
+        break;
+      case "Enter":
+        handleEnter();
+        break;
+      case "Exit":
+        handleExit();
+        break;
+      case "Back to Menu":
+      case "Cancel":
+        handleBackToMenuOrCancel();
+        break;
       case "Withdraw":
-        setAtmState((prevState) => ({
-          ...prevState,
-          screen: "withdraw",
-          message: "",
-          inputLabel: "Withdraw:",
-          inputValue: "",
-          optionsLeft: ["", "", "", ""],
-          optionsRight: ["", "", "Cancel", "Enter"],
-          isPin: false,
-        }));
+        handleWithdraw();
         break;
       case "Deposit":
-        setAtmState((prevState) => ({
-          ...prevState,
-          screen: "deposit",
-          message: "",
-          inputLabel: "Deposit:",
-          inputValue: "",
-          optionsLeft: ["", "", "", ""],
-          optionsRight: ["", "", "Cancel", "Enter"],
-          isPin: false,
-        }));
+        handleDeposit();
         break;
       default:
         break;
