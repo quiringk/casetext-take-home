@@ -9,6 +9,8 @@ import DynamicInput from "./DynamicInput";
 const API_URL = "http://localhost:3001";
 
 const DEFAULT_OPTIONS = {
+  inputLabel: "",
+  inputValue: "",
   optionsLeft: ["", "", "", ""],
   optionsRight: ["", "", "", "Enter PIN"],
 };
@@ -24,8 +26,6 @@ function Machine({ selectedCardChanged }: Props) {
     message: "Welcome to the ATM",
     balance: 0,
     pin: "",
-    inputLabel: "",
-    inputValue: "",
     ...DEFAULT_OPTIONS,
   });
 
@@ -247,7 +247,6 @@ function Machine({ selectedCardChanged }: Props) {
     } else {
       setAtmState((prevState) => ({
         ...prevState,
-        inputLabel: "",
         message: "Welcome to the ATM",
         ...DEFAULT_OPTIONS,
       }));
