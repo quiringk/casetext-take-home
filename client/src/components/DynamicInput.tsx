@@ -27,6 +27,7 @@ const DynamicInput: React.FC<DynamicInputProps> = ({
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.target.value = e.target.value.replace(/[^0-9]/g, "");
     if (!maxLength || e.target.value.length <= maxLength) {
       onChange(e.target.value);
     }
@@ -55,7 +56,7 @@ const DynamicInput: React.FC<DynamicInputProps> = ({
       <input
         ref={inputRef}
         className="dynamicInputStyle"
-        type="text"
+        type="number"
         value={value}
         onChange={handleChange}
         maxLength={maxLength}
