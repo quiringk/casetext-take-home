@@ -127,14 +127,13 @@ function Machine({ selectedCardChanged }: Props) {
         break;
       case "withdraw": {
         if (parseInt(inputValue) <= balance && parseInt(inputValue) > 0) {
-          // Make the API request
           fetch(`${API_URL}/withdraw`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              pin: pin, // this should be the pin of the authenticated user
+              pin: pin,
               amount: parseInt(inputValue),
             }),
           })
@@ -194,7 +193,6 @@ function Machine({ selectedCardChanged }: Props) {
                   optionsRight: ["", "", "Exit", "Back to Menu"],
                 }));
               } else {
-                // Handle any error message from the server here
                 setAtmState((prevState) => ({
                   ...prevState,
                   inputLabel: "",
@@ -282,7 +280,7 @@ function Machine({ selectedCardChanged }: Props) {
     }));
   };
 
-  const buttonPressed = async (value: string) => {
+  const onButtonPressed = async (value: string) => {
     switch (value) {
       case "Balance":
         handleBalance();
@@ -315,10 +313,10 @@ function Machine({ selectedCardChanged }: Props) {
   return (
     <div className="screen-section">
       <div className="buttons">
-        <Button side={"left"} onClick={() => buttonPressed(optionsLeft[0])} />
-        <Button side={"left"} onClick={() => buttonPressed(optionsLeft[1])} />
-        <Button side={"left"} onClick={() => buttonPressed(optionsLeft[2])} />
-        <Button side={"left"} onClick={() => buttonPressed(optionsLeft[3])} />
+        <Button side={"left"} onClick={() => onButtonPressed(optionsLeft[0])} />
+        <Button side={"left"} onClick={() => onButtonPressed(optionsLeft[1])} />
+        <Button side={"left"} onClick={() => onButtonPressed(optionsLeft[2])} />
+        <Button side={"left"} onClick={() => onButtonPressed(optionsLeft[3])} />
       </div>
       <div className="screen">
         {message && (
@@ -354,10 +352,22 @@ function Machine({ selectedCardChanged }: Props) {
         <img src={systemsImg} className="systems-img" alt="" />
       </div>
       <div className="buttons">
-        <Button side={"right"} onClick={() => buttonPressed(optionsRight[0])} />
-        <Button side={"right"} onClick={() => buttonPressed(optionsRight[1])} />
-        <Button side={"right"} onClick={() => buttonPressed(optionsRight[2])} />
-        <Button side={"right"} onClick={() => buttonPressed(optionsRight[3])} />
+        <Button
+          side={"right"}
+          onClick={() => onButtonPressed(optionsRight[0])}
+        />
+        <Button
+          side={"right"}
+          onClick={() => onButtonPressed(optionsRight[1])}
+        />
+        <Button
+          side={"right"}
+          onClick={() => onButtonPressed(optionsRight[2])}
+        />
+        <Button
+          side={"right"}
+          onClick={() => onButtonPressed(optionsRight[3])}
+        />
       </div>
     </div>
   );

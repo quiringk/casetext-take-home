@@ -16,7 +16,9 @@
 
 .button {
   background-color: rgb(185, 185, 185);
-  height: 30px;
+  height: 26px;
   width: 50px;
   border-radius: 5px;
+  border-top: 2px solid rgb(217, 217, 212);
+  border-bottom: 2px solid rgb(155, 155, 155);
 }
